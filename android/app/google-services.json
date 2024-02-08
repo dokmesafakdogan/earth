@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "79314296769",
+    "project_id": "earth-34165",
+    "storage_bucket": "earth-34165.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:79314296769:android:f4112b7ca9a5662db99940",
+        "android_client_info": {
+          "package_name": "com.example.earth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "79314296769-g8c7p6epjuiuahdd2tcec8pethgppq1i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDq--hCan0TMvuLD22062dRvoPQheFIAjU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "79314296769-g8c7p6epjuiuahdd2tcec8pethgppq1i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "79314296769-oja2kkim1sm3nj7uub56saubie12u5pi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.earth"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
