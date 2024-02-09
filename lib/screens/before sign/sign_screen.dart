@@ -7,7 +7,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:earth/main.dart'; // Import your main file
+import 'package:earth/main.dart';
+
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -50,11 +51,12 @@ class _SignupScreenState extends State<SignupScreen> {
         password: _passwordController.text,
       );
 
-      // Save additional user information to Firestore
+     
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'name': _nameController.text,
         'surname': _surnameController.text,
         'email': _emailController.text,
+        'photoURL': '',
       });
 
       Navigator.of(context).pushNamedAndRemoveUntil(RouteEnums.customNavigationBar.name, (route) => false);
@@ -90,7 +92,7 @@ class _SignupScreenState extends State<SignupScreen> {
               email: user.email ?? '',
               name: user.displayName ?? '',
               surname: user.displayName ?? '',
-              photoURL: user.photoURL ??''
+              photoURL: user.photoURL ?? '',
             ).toJson(),
           );
 
@@ -346,7 +348,7 @@ class UserResponseModel {
         name: json["name"],
         surname: json["surname"],
         email: json["email"],       
-        photoURL: json['photURl']
+        photoURL: json['photURL']
     );
 
 }

@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:earth/screens/after%20sign/list_all.dart';
+import 'package:earth/screens/after%20sign/list_of_pop.dart';
 import 'package:earth/screens/after%20sign/place_detail.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +31,9 @@ class HomeScreen extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+             Navigator.of(context).push(MaterialPageRoute(builder: (context) => const PopList(),),);
+            },
             child: const Text('Show All'),
           )
         ],
@@ -104,7 +108,9 @@ class HomeScreen extends StatelessWidget {
                 width: 125,
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AllScreen(),));
+                },
                 child: const Text(
                   'Show All',
                   style: TextStyle(color: Colors.blueGrey),

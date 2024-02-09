@@ -1,85 +1,85 @@
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class UserImagePicker extends StatefulWidget {
   const UserImagePicker({super.key, required this.onPickImage});
 
   final void Function(String photoURL) onPickImage;
 
- @override
-  State<UserImagePicker> createState() {
-    return _UserImagePickerState();
-    
-  }
-}  
+  @override
+  State<UserImagePicker> createState() => _UserImagePickerState();
+}
 
 class _UserImagePickerState extends State<UserImagePicker> {
-  File? _pickedImageFile;
-  bool _isLoading = false;
+  double screenHeight = 0;
+  double screenWidth = 0;
 
-  Future<void> _pickImage() async {
-    setState(() {
-      _isLoading = true;
-    });
+  String? profilePicLink;
 
-    final pickedImage = await  ImagePicker().pickImage(
+  Future<void> pickUploadProfilePic() async {
+    final image = await ImagePicker().pickImage(
       source: ImageSource.gallery,
-      imageQuality: 50,
-      maxWidth: 150,
+      maxHeight: 512,
+      maxWidth: 512,
+      imageQuality: 90,
     );
 
-    setState(() {
-      _isLoading = false;
+    if (image == null) return;
+
+    final Reference ref = FirebaseStorage.instance.ref().child("profile_images/${DateTime.now().millisecondsSinceEpoch}.jpg");
+
+    final UploadTask uploadTask = ref.putFile(File(image.path));
+
+    uploadTask.whenComplete(() async {
+      try {
+        final String photoURL = await ref.getDownloadURL();
+        setState(() {
+          profilePicLink = photoURL;
+        });
+        widget.onPickImage(profilePicLink!);
+      } catch (e) {
+        print("Error uploading profile picture: $e");
+      }
     });
-
-    if (pickedImage == null) {
-      return;
-    }
-
-    setState(() {
-      _pickedImageFile = File(pickedImage.path);
-    });
-
-    _uploadImageToFirebase();
   }
-
-  // Future<void> _uploadImageToFirebase() async {
-  //   if (_pickedImageFile == null) return;
-
-  //   final fileName = DateTime.now().millisecondsSinceEpoch.toString();
-  //   final firebaseStorageRef =
-  //       firebase_storage.FirebaseStorage.instance.ref().child(fileName);
-
-  //   await firebaseStorageRef.putFile(_pickedImageFile!);
-
-  //   final photoURL = await firebaseStorageRef.getDownloadURL();
-
-  //   widget.onPickImage(photoURL);
-  // }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 40,
-          backgroundColor: Colors.grey,
-          foregroundImage: _pickedImageFile != null
-              ? FileImage(_pickedImageFile!)
-              : null,
-          child: _isLoading ? const CircularProgressIndicator() : null,
-        ),
-        TextButton.icon(
-          onPressed: _pickImage,
-          icon: const Icon(Icons.image),
-          label: const Text(
-            'Add Image',
+    // screenHeight = MediaQuery.of(context).size.height;
+    // screenWidth = MediaQuery.of(context).size.width;
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: pickUploadProfilePic,
+            child: Container(
+              margin: const EdgeInsets.only(top: 10, bottom: 5),
+              height: 300,
+              width: 150,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Center(
+                child: profilePicLink == null
+                    ? const Icon(
+                        Icons.person,
+                        color: Color.fromARGB(255, 116, 14, 14),
+                        size: 80,
+                      )
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.network(profilePicLink!),
+                      ),
+              ),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
