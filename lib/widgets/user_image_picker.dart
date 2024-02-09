@@ -1,7 +1,8 @@
-import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:earth/widgets/add_data.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UserImagePicker extends StatefulWidget {
@@ -17,69 +18,69 @@ class _UserImagePickerState extends State<UserImagePicker> {
   double screenHeight = 0;
   double screenWidth = 0;
 
-  String? profilePicLink;
-
-  Future<void> pickUploadProfilePic() async {
-    final image = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      maxHeight: 512,
-      maxWidth: 512,
-      imageQuality: 90,
-    );
-
-    if (image == null) return;
-
-    final Reference ref = FirebaseStorage.instance.ref().child("profile_images/${DateTime.now().millisecondsSinceEpoch}.jpg");
-
-    final UploadTask uploadTask = ref.putFile(File(image.path));
-
-    uploadTask.whenComplete(() async {
-      try {
-        final String photoURL = await ref.getDownloadURL();
-        setState(() {
-          profilePicLink = photoURL;
-        });
-        widget.onPickImage(profilePicLink!);
-      } catch (e) {
-        print("Error uploading profile picture: $e");
-      }
-    });
+  pickImage(ImageSource source)async{
+    final ImagePicker imagePicker = ImagePicker();
+    XFile? file = await imagePicker.pickImage(source: source);
+    if(file != null){
+      return await file.readAsBytes();
+    }
+    // print('no image is selected');
   }
+
+Uint8List? _image;
+
+void selectImage()async{
+  Uint8List img = await pickImage(ImageSource.gallery);
+  setState(() {
+     _image =img;
+  });
+ 
+}
+
+void saveAvatar()async{
+
+ 
+  // ignore: unused_local_variable
+  String resp = await StoreData().saveData(file: _image!);
+   // ignore: use_build_context_synchronously
+   ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Profile picture changed.'),
+            ),
+          );
+} 
+ 
 
   @override
   Widget build(BuildContext context) {
     // screenHeight = MediaQuery.of(context).size.height;
     // screenWidth = MediaQuery.of(context).size.width;
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: pickUploadProfilePic,
-            child: Container(
-              margin: const EdgeInsets.only(top: 10, bottom: 5),
-              height: 300,
-              width: 150,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Center(
-                child: profilePicLink == null
-                    ? const Icon(
-                        Icons.person,
-                        color: Color.fromARGB(255, 116, 14, 14),
-                        size: 80,
-                      )
-                    : ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.network(profilePicLink!),
-                      ),
+    return  Column(
+      children: [
+        Stack(
+         
+          children: [
+             _image != null ?
+          CircleAvatar(
+            radius: 64,
+            backgroundImage:  MemoryImage(_image!),
+          ):
+            const CircleAvatar(
+              radius: 64,
+              backgroundImage:  
+              NetworkImage('https://www.pngall.com/wp-content/uploads/5/Profile-PNG-File.png'
               ),
             ),
-          ),
-        ],
-      ),
+            Positioned(bottom: -10,
+            left: 80,child: IconButton(
+              onPressed: selectImage, 
+              icon:const  Icon(Icons.add_a_photo),),
+            )
+          ],
+        ),
+        ElevatedButton(onPressed: saveAvatar, child: const Text ('Save') )
+      ],
     );
+    
   }
 }

@@ -15,7 +15,7 @@ class AllScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'ALl DESTINATIONS',
+          'ALL DESTINATIONS',
           style: TextStyle(fontSize: 28),
         ),
         

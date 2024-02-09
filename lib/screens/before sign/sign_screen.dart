@@ -2,6 +2,7 @@
 
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:earth/screens/notifier/auth_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -56,8 +57,10 @@ class _SignupScreenState extends State<SignupScreen> {
         'name': _nameController.text,
         'surname': _surnameController.text,
         'email': _emailController.text,
-        'photoURL': '',
+        'imageUrl': '',
       });
+
+      AuthManager.instance.setUserUuid(userCredential.user!.uid);
 
       Navigator.of(context).pushNamedAndRemoveUntil(RouteEnums.customNavigationBar.name, (route) => false);
     } on FirebaseAuthException catch (e) {
@@ -86,16 +89,17 @@ class _SignupScreenState extends State<SignupScreen> {
       final UserCredential authResult = await _auth.signInWithCredential(credential);
       // ignore: unused_local_variable
       final User? user = authResult.user;
+      
 
       await _firestore.collection('users').doc(user!.uid).set(
             UserRequestModel(
               email: user.email ?? '',
               name: user.displayName ?? '',
               surname: user.displayName ?? '',
-              photoURL: user.photoURL ?? '',
+              imageUrl: user.photoURL ?? '',
             ).toJson(),
           );
-
+      AuthManager.instance.setUserUuid(user.uid);
      // print("User Name: ${user!.displayName}");
       Navigator.of(context).pushNamedAndRemoveUntil(RouteEnums.customNavigationBar.name, (route) => false);
     } catch (error) {
@@ -315,12 +319,12 @@ class UserRequestModel {
     String name;
     String surname;
     String email;
-    String photoURL;
+    String imageUrl;
     UserRequestModel({
         required this.name,
         required this.surname,
         required this.email,
-        required this.photoURL,
+        required this.imageUrl,
     });
 
 
@@ -328,7 +332,7 @@ class UserRequestModel {
         "name": name,
         "surname": surname,
         "email": email,
-        "photoURL": photoURL,
+        "imageUrl": imageUrl,
     };
 }
 

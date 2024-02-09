@@ -57,6 +57,7 @@ class _DummyPageState extends State<DummyPage> {
                 style: const TextStyle(fontSize: 34),
               ),
               const Text('View and edit your profile'),
+              const SizedBox(height: 30),
               UserImagePicker(onPickImage: (photoURL) {
                 setState(() {
                   userResponse?.photoURL = photoURL;
@@ -65,7 +66,7 @@ class _DummyPageState extends State<DummyPage> {
             ],
           ),
           const SizedBox(
-            height: 10,
+            height: 30,
           ),
           GestureDetector(
             child: const Padding(
