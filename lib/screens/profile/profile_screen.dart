@@ -1,19 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:earth/main.dart';
-import 'package:earth/screens/after%20sign/password_change.dart';
+import 'package:earth/screens/profile/password_change.dart';
 import 'package:earth/screens/before%20sign/sign_screen.dart';
 import 'package:earth/widgets/user_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class DummyPage extends StatefulWidget {
-  const DummyPage({Key? key}) : super(key: key);
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({Key? key}) : super(key: key);
 
   @override
-  State<DummyPage> createState() => _DummyPageState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _DummyPageState extends State<DummyPage> {
+class _ProfileScreenState extends State<ProfileScreen> {
   UserResponseModel? userResponse;
   @override
   void initState() {

@@ -39,6 +39,7 @@ Future<QuerySnapshot<Map<String, dynamic>>> dfg() async {
                             context,
                             MaterialPageRoute(
                               builder: (context) => DetailScreen(
+                                placesID: items[index].id,
                                 place: items[index],),),);
                         },
                         child: Container(

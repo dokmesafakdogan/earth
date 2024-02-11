@@ -58,6 +58,7 @@ class HomeScreen extends StatelessWidget {
                             MaterialPageRoute(
                               builder: (context) => DetailScreen(
                                 place: items[index],
+                                placesID: items[index].id,
                               ),
                             ),
                           );
@@ -134,7 +135,11 @@ class HomeScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => DetailScreen(
-                                place: items[index],),),);
+                                place: items[index],
+                                placesID: items[index].id,
+                                ),
+                                ),
+                                );
                         },
                         child: Container(
                           height: 149,

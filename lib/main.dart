@@ -1,6 +1,6 @@
 import 'package:earth/screens/after%20sign/favorites_screen.dart';
 import 'package:earth/screens/after%20sign/home_screen.dart';
-import 'package:earth/screens/after%20sign/profile_screen_wrapper.dart';
+import 'package:earth/screens/profile/profile_screen_wrapper.dart';
 import 'package:earth/screens/before%20sign/intro_screen.dart';
 import 'package:earth/screens/before%20sign/login_screen.dart';
 import 'package:earth/screens/before%20sign/sign_screen.dart';

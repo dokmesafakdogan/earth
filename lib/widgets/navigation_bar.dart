@@ -1,6 +1,6 @@
 import 'package:earth/screens/after%20sign/favorites_screen.dart';
 import 'package:earth/screens/after%20sign/home_screen.dart';
-import 'package:earth/screens/after%20sign/profile_screen.dart';
+import 'package:earth/screens/profile/profile_screen.dart';
 import 'package:flutter/material.dart';
 
 
@@ -20,7 +20,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   final List<Widget> _widgetOptions = <Widget>[
     const HomeScreen(),
     const FavoritesScreen(),
-    const DummyPage(),
+    const ProfileScreen(),
   ];
 
   void _onItemTapped(int index) {
