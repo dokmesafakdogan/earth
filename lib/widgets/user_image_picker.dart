@@ -89,10 +89,7 @@ class _UserImagePickerState extends State<UserImagePicker> {
               backgroundImage:  
               NetworkImage(_imageUrl)
             ),
-            // CircleAvatar(
-            //   radius: 64,
-            //   backgroundImage: _image != null ? MemoryImage(_image!) : NetworkImage(_imageUrl),
-            // ),
+          
             Positioned(
               bottom: -10,
               left: 80,

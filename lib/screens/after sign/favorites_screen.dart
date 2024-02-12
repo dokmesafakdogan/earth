@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
 
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(appBar: AppBar(title: const Text('Favorites'),),
@@ -37,62 +40,77 @@ class FavoritesScreen extends StatelessWidget {
         return ListView.builder(
           itemCount: snapshot.data!.length,
           itemBuilder: (context, index) {
-            return FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-              future: getPlaceDetails(snapshot.data![index]),
-              builder: (context, placeSnapshot) {
-                if (placeSnapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-
-                if (placeSnapshot.hasError) {
-                  return Center(
-                    child: Text('Error: ${placeSnapshot.error}'),
-                  );
-                }
-
-                if (!placeSnapshot.hasData || !placeSnapshot.data!.exists) {
-                  return const SizedBox(); // Placeholder widget
-                }
-
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailScreen(
-                          place: placeSnapshot.data!,
-                          placesID: snapshot.data![index],
-                        ),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    height: 149,
-                    width: 200,
-                    margin: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      image: DecorationImage(
-                        image: NetworkImage(placeSnapshot.data!['imageUrl']),
-                        fit: BoxFit.cover,
-                      ),
+            return Dismissible(
+              key: Key(snapshot.data![index]),
+              direction: DismissDirection.horizontal,
+              
+              onDismissed: (direction) {
+                removeFavorite(snapshot.data![index]);
+                ScaffoldMessenger.of(context).showSnackBar(
+                   SnackBar(
+                    content: const Text('Removed'),
+                    duration: const Duration(seconds: 2),
+                    action:SnackBarAction(label: 'UNDO', onPressed: (){
+                      addFavorites(snapshot.data![index]);
+                    }
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 23, left: 4, top: 8),
-                      child: Text(
-                        placeSnapshot.data!['place-name'],
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
                     ),
-                  ),
-                );
+                  );
               },
+              child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                future: getPlaceDetails(snapshot.data![index]),
+                builder: (context, placeSnapshot) {
+                  if (placeSnapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+              
+                  if (placeSnapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${placeSnapshot.error}'),
+                    );
+                  }
+                  
+              
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailScreen(
+                            place: placeSnapshot.data!,
+                            placesID: snapshot.data![index],
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      height: 149,
+                      width: 200,
+                      margin: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        image: DecorationImage(
+                          image: NetworkImage(placeSnapshot.data!['imageUrl']),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 23, left: 4, top: 8),
+                        child: Text(
+                          placeSnapshot.data!['place-name'],
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             );
           },
         );
@@ -121,4 +139,38 @@ class FavoritesScreen extends StatelessWidget {
       return const Stream.empty();
     }
   }
-}
+  Future<void> removeFavorite(String placeId) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      CollectionReference favoritesRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('favorites');
+      
+      // Remove the place from favorites
+      await favoritesRef.doc(placeId).delete();
+    } else {
+      // Handle user not signed in
+    }
+  }
+  void addFavorites(String placesId) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      CollectionReference favoritesRef =FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('favorites');
+          
+         
+       await favoritesRef.doc(placesId).set({
+        'added_at' : DateTime.now(),
+       });
+      
+
+      }
+    }
+  }
+
+  
+
+ 

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 
 class CustomNavigationBar extends StatefulWidget {
-  const CustomNavigationBar({super.key, required List<StatelessWidget> destinations});
+  const CustomNavigationBar({super.key, required List<Widget> destinations});
 
   @override
   State<CustomNavigationBar> createState() =>

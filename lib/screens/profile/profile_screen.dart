@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:earth/main.dart';
+import 'package:earth/screens/name_change.dart';
 import 'package:earth/screens/profile/password_change.dart';
 import 'package:earth/screens/before%20sign/sign_screen.dart';
 import 'package:earth/widgets/user_image_picker.dart';
@@ -20,6 +21,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     _getUserName();
   }
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   _getUserName();
+  // }
+
 
   Future<void> _getUserName() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -110,7 +118,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             ),
-            onLongPress: () {},
+            onLongPress: () async{
+              final res = await Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const NameChange(),)
+              );
+              if(res ?? false){
+                _getUserName();
+              }
+            },
           ),
           const Divider(
             color: Colors.black,
